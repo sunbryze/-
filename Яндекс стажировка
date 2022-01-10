@@ -1,0 +1,67 @@
+import openpyxl
+import random
+wb = openpyxl.load_workbook(r'C:\Users\Александр\Desktop\Доки по учебе\Моделирование недр\Лаба 5\Работа 5.xlsx')
+
+sheet = wb['Лист1']
+
+S=[]
+F=[]
+V,B,Vs,Gs,R,G,e = 0,0,0,0,0,0,0
+p = 2.93645422953182
+d = 2.82129916170704
+O = 0
+for col in range(26):
+	if col < 12:
+		s = sheet.cell(row = 9, column = col + 3)
+		f = sheet.cell(row = 6, column = col + 3)
+	else:
+		s = sheet.cell(row = 13, column = col - 9)
+		f = sheet.cell(row = 10, column = col - 9)
+	S.append(float(s.value))
+	F.append(float(f.value))
+Z=[]
+for col in range(9):
+	cell = sheet.cell(row = 16, column = col + 2)
+	Z.append(float(cell.value))
+
+sheet = wb['Лист2']
+
+for h in range(700):
+	for a in range(33): 
+		for i in range(9):
+			n = random.random()
+			for j in range(12):
+				if float(S[j]) < n and float(S[j+1]) >= n:
+					z = random.random() * (float(F[j+1])-float(F[j]))+float(F[j])
+					break
+			V += z * Z[i]
+		Vs += V
+		B += 1
+		V = 0
+
+	for a in range(52):
+		for i in range(9):
+			n = random.random()
+			for j in range(12,26):
+				if float(S[j]) < n and float(S[j+1]) >= n:
+					z = random.random() * (float(F[j+1])-float(F[j]))+float(F[j])
+					break
+			G += z * Z[i]
+		Gs += G
+		R += 1
+		G = 0
+	X = ((Vs/B)*B+(Gs/R)*R)/(B+R)
+	cell = sheet.cell(row = h + 5, column = 8)
+	cell.value = X
+	B,Vs,Gs,R = 0,0,0,0
+	if d < X < p:
+		e += 1
+	else:
+		e += 0
+
+L = e/700
+cell = sheet.cell(row = 3, column = 8)
+cell.value = L
+
+
+wb.save(r'C:\Users\Александр\Desktop\Доки по учебе\Моделирование недр\Лаба 5\Работа 5.xlsx')
